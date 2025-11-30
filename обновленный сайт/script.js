@@ -193,11 +193,14 @@ document.addEventListener('DOMContentLoaded', function() {
         showModal('termsOfUseModal');
     });
     
-    // Закрытие модальных окон при клике вне их
-    window.addEventListener('click', function(e) {
-        if (e.target.classList.contains('modal')) {
-            hideModal(e.target.id);
-        }
+    document.getElementById('dataProcessingLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showModal('dataProcessingModal');
+    });
+    
+    document.getElementById('cookiePolicyLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        showModal('cookiePolicyModal');
     });
     
     // Обработчики для ссылок в форме
@@ -210,6 +213,22 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         showModal('termsOfUseModal');
     });
+    
+    // Закрытие модальных окон при клике на кнопку закрытия
+    document.getElementById('privacyModalClose').addEventListener('click', function() {
+        hideModal('privacyPolicyModal');
+    });
+    
+    document.getElementById('termsModalClose').addEventListener('click', function() {
+        hideModal('termsOfUseModal');
+    });
+    
+    // Закрытие модальных окон при клике вне их
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            hideModal(e.target.id);
+        }
+    });
 });
 
 // ========== ФУНКЦИОНАЛ "ЧИТАТЬ ДАЛЕЕ" ==========
@@ -221,7 +240,7 @@ const articles = {
         serviceType: 'mediation',
         content: `
             <div class="article-meta">
-                <span><i class="far fa-calendar"></i> 15 мая 2024</span>
+                <span><i class="far fa-calendar"></i> 15 мая 2026</span>
                 <span><i class="far fa-clock"></i> Время чтения: 8 мин</span>
             </div>
             
@@ -278,7 +297,7 @@ const articles = {
         serviceType: 'personality-code',
         content: `
             <div class="article-meta">
-                <span><i class="far fa-calendar"></i> 22 мая 2024</span>
+                <span><i class="far fa-calendar"></i> 22 мая 2026</span>
                 <span><i class="far fa-clock"></i> Время чтения: 10 мин</span>
             </div>
             
@@ -343,7 +362,7 @@ const articles = {
         serviceType: 'profiling',
         content: `
             <div class="article-meta">
-                <span><i class="far fa-calendar"></i> 5 июня 2024</span>
+                <span><i class="far fa-calendar"></i> 5 июня 2026</span>
                 <span><i class="far fa-clock"></i> Время чтения: 12 мин</span>
             </div>
             
@@ -557,13 +576,12 @@ function sendMessage() {
     sendToTelegram(message);
     sendToWhatsApp(message);
     
-    // Имитируем ответ ассистента
+    // Имитируем ответ ассистента с предложением каналов связи
     setTimeout(() => {
         const responses = [
-            "Спасибо за ваш вопрос! Я передам его специалисту, и он свяжется с вами в ближайшее время.",
-            "Интересный вопрос! Давайте обсудим его подробнее на консультации.",
-            "Это важная тема. Рекомендую записаться на консультацию для детального обсуждения.",
-            "По этому вопросу лучше проконсультироваться лично. Могу помочь с записью на прием."
+            `Спасибо за ваш вопрос! Для более быстрой связи, напишите мне напрямую в Telegram: <a href="https://t.me/Ivan_Svetlyi" target="_blank">@Ivan_Svetlyi</a> или WhatsApp: <a href="https://wa.me/79164443963" target="_blank">+7 916 444 39 63</a>. Я отвечу в ближайшее время.`,
+            `Благодарю за обращение! Для оперативной связи рекомендую написать мне в Telegram: <a href="https://t.me/Ivan_Svetlyi" target="_blank">@Ivan_Svetlyi</a> - это самый быстрый способ получить ответ. Также доступен WhatsApp: <a href="https://wa.me/79164443963" target="_blank">+7 916 444 39 63</a>.`,
+            `Спасибо за ваше сообщение! Чтобы получить быстрый ответ, напишите мне в Telegram: <a href="https://t.me/Ivan_Svetlyi" target="_blank">@Ivan_Svetlyi</a> (предпочтительно) или WhatsApp: <a href="https://wa.me/79164443963" target="_blank">+7 916 444 39 63</a>.`
         ];
         const randomResponse = responses[Math.floor(Math.random() * responses.length)];
         addMessage(randomResponse, 'bot');
@@ -573,7 +591,13 @@ function sendMessage() {
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
-    messageDiv.textContent = text;
+    
+    if (sender === 'bot' && text.includes('<a href')) {
+        messageDiv.innerHTML = text;
+    } else {
+        messageDiv.textContent = text;
+    }
+    
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }

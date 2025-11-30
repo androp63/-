@@ -1314,3 +1314,17 @@ footer {
         right: 20px;
     }
 }
+
+/* Trust Indicators Icons */
+.trust-indicators .trust-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: var(--accent-gold);
+}
+
+/* Skills Grid Icons */
+.skills-grid .skill-icon {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: var(--accent-gold);
+}
