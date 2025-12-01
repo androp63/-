@@ -1,0 +1,70 @@
+# VERITAS CODE 2026 - SEO оптимизация и безопасность
+
+# Включение модуля mod_rewrite
+RewriteEngine On
+
+# Перенаправление с www на без www
+RewriteCond %{HTTP_HOST} ^www\.veritas-code\.рф$ [NC]
+RewriteRule ^(.*)$ https://veritas-code.рф/$1 [R=301,L]
+
+# Перенаправление HTTP на HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Компрессия GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Кэширование браузера
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/html "access plus 1 day"
+</IfModule>
+
+# Заголовки безопасности
+<IfModule mod_headers.c>
+    # XSS Protection
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Clickjacking Protection
+    Header set X-Frame-Options "DENY"
+    
+    # MIME Type Protection
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # HSTS (HTTP Strict Transport Security)
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    
+    # CSP (Content Security Policy)
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.googletagmanager.com https://mc.yandex.ru; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.telegram.org https://wa.me https://mc.yandex.ru; frame-ancestors 'none'; form-action 'self' https://api.telegram.org mailto:;"
+</IfModule>
+
+# Запрет доступа к скрытым файлам
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Запрет доступа к файлам конфигурации
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Защита от ботов-сканеров
+RewriteCond %{HTTP_USER_AGENT} (AhrefsBot|MJ12bot|SemrushBot|DotBot|rogerbot) [NC]
+RewriteRule ^.*$ - [F,L]
+
+# Улучшенная обработка 404 ошибок
+ErrorDocument 404 /404.html
