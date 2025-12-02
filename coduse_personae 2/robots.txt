@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: https://veritas-code.рф/sitemap.xml
+
+User-agent: Yandex
+Allow: /
+Clean-param: utm_source&utm_medium&utm_campaign /?
+
+User-agent: Googlebot
+Allow: /
